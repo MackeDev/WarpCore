@@ -1,4 +1,4 @@
-# Cygnus Network Token Creation
+# Cygnus Network Token
 
 This repo contains the smart contract for the Cygnus Network Token Creation.
 
