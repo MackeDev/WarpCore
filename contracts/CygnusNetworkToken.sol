@@ -496,9 +496,9 @@ contract CygnusNetworkToken is ERC20Permit, ERC20Votes, Ownable, HolderRewards {
             // at max swap
             uint256 maxToSwap = (tokenReserves * 10) / 100;
 
-            uint256 toswap = liquidityReserves > maxToSwap
+            uint256 toswap = rewardsReserves > maxToSwap
                 ? maxToSwap
-                : liquidityReserves;
+                : rewardsReserves;
 
             _swapTokensForEth(toswap);
 

@@ -568,6 +568,8 @@ describe("CygN", () => {
     // set miniBeforeLiquify to 0
     await cygn.connect(owner).setMiniBeforeLiquify(0);
 
+    const rewardsReserves = await cygn.rewardsReserves();
+
     // alice sells her 100 tokens
     await cygn
       .connect(alice)
@@ -593,7 +595,7 @@ describe("CygN", () => {
     const expectedOut = 100n * 10n ** 18n - (100n * 10n ** 18n * 20n) / 100n;
 
     expect(lpPairBalanceAfter - lpPairBalanceBefore).to.closeTo(
-      expectedOut + liquidityReserves,
+      expectedOut + liquidityReserves + rewardsReserves,
       3n * 10n ** 16n
     );
   });
