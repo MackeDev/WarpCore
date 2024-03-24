@@ -79,6 +79,7 @@ abstract contract HolderRewards is Ownable {
      * @param minBalance minimum balance to be eligible for rewards
      */
     function setMinSharePerRewards(uint256 minBalance) external onlyOwner {
+        require(minBalance <= 50_000 * 10 ** 18, "can't set the min more than 50k");
         minShareForRewards = minBalance;
     }
 
@@ -113,12 +114,6 @@ abstract contract HolderRewards is Ownable {
 
         if (pendingAmount <= 0) return;
 
-        (bool sent, ) = payable(user).call{value: pendingAmount}("");
-        //if !sent means probably the receiver is a non payable address
-        if (!sent) {
-            // add pending amount to global shares to prevent loss of ETH
-            _addRewards(pendingAmount);
-        }
 
         emit Claimed(user, pendingAmount);
 
@@ -130,6 +125,13 @@ abstract contract HolderRewards is Ownable {
             (userData.shares * accPerShare) /
             DEBT_DENOMINATOR;
         totalRewardsDebt = totalRewardsDebt + userData.rewardDebt;
+
+        (bool sent, ) = payable(user).call{value: pendingAmount}("");
+        //if !sent means probably the receiver is a non payable address
+        if (!sent) {
+            // add pending amount to global shares to prevent loss of ETH
+            _addRewards(pendingAmount);
+        }
     }
 
     /**
