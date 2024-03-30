@@ -22,7 +22,7 @@ const config: HardhatUserConfig = {
     currency: "USD",
     enabled: true,
     coinmarketcap: process.env.MC_API_KEY as string,
-    gasPrice: 33,
+    gasPrice: 19,
     // outputFile: "gas-report.txt",
   },
   networks: {

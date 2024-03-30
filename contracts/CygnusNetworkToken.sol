@@ -25,7 +25,7 @@ uint16 constant SELL_TAX_LIQUIDIY = 1000; // 10%
 uint16 constant SELL_TAX_TEAM = 500; // 5%
 uint16 constant SELL_TAX_REWARD = 500; // 5%
 
-uint256 constant TAX_BASE = 10000;
+uint256 constant TAX_BASE = 10000; // 100% bps
 
 uint256 constant MAX_TAX = 2000; // 20%
 
@@ -80,35 +80,39 @@ contract CygnusNetworkToken is ERC20Permit, ERC20Votes, Ownable, HolderRewards {
 
     constructor(
         // to allow for easy testing/deploy on behalf of someone else
-        address ownerArg,
-        address payable teamHolderArg,
-        address payable liquidityHolderArg,
-        IUniswapV2Router02 uniswapV2RouterArg,
-        IUniFactory uniswapV2FactoryArg
-    ) ERC20(NAME, SYMBOL) Ownable(ownerArg) ERC20Permit("") {
-        _mint(ownerArg, INITIAL_SUPPLY);
+        address ownerAddress,
+        address payable teamHolderAddress,
+        address payable liquidityHolderAddress,
+        IUniswapV2Router02 uniswapV2RouterAddress,
+        IUniFactory uniswapV2FactoryAddress
+    ) ERC20(NAME, SYMBOL) Ownable(ownerAddress) ERC20Permit(SYMBOL) {
+        _mint(ownerAddress, INITIAL_SUPPLY);
 
         require(
-            teamHolderArg != address(0),
+            teamHolderAddress != address(0),
             "CygnusNetwork: team holder is the zero address"
         );
-        teamHolder = teamHolderArg;
+        teamHolder = teamHolderAddress;
         require(
-            liquidityHolderArg != address(0),
+            liquidityHolderAddress != address(0),
             "CygnusNetwork: liquidity holder is the zero address"
         );
-        liquidityHolder = liquidityHolderArg;
+        liquidityHolder = liquidityHolderAddress;
 
-        uniRouter = uniswapV2RouterArg;
-        uniFactory = uniswapV2FactoryArg;
+        uniRouter = uniswapV2RouterAddress;
+        uniFactory = uniswapV2FactoryAddress;
 
-        weth = uniswapV2RouterArg.WETH();
+        weth = uniswapV2RouterAddress.WETH();
 
         // Create a uniswap pair for this new token
-        uniPair = uniswapV2FactoryArg.createPair(address(this), weth);
+        uniPair = uniswapV2FactoryAddress.createPair(address(this), weth);
 
         // approve token transfer to cover all future transfereFrom calls
-        _approve(address(this), address(uniswapV2RouterArg), type(uint256).max);
+        _approve(
+            address(this),
+            address(uniswapV2RouterAddress),
+            type(uint256).max
+        );
 
         isPair[uniPair] = true;
 
@@ -117,7 +121,7 @@ contract CygnusNetworkToken is ERC20Permit, ERC20Votes, Ownable, HolderRewards {
         isExcludedFromFee[address(this)] = true;
         excludedFromRewards[address(this)] = true;
 
-        isExcludedFromFee[ownerArg] = true;
+        isExcludedFromFee[ownerAddress] = true;
     }
 
     receive() external payable {

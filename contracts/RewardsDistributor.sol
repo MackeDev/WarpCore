@@ -79,7 +79,10 @@ abstract contract HolderRewards is Ownable {
      * @param minBalance minimum balance to be eligible for rewards
      */
     function setMinSharePerRewards(uint256 minBalance) external onlyOwner {
-        require(minBalance <= 50_000 * 10 ** 18, "can't set the min more than 50k");
+        require(
+            minBalance <= 50_000 * 10 ** 18,
+            "can't set the min more than 50k"
+        );
         minShareForRewards = minBalance;
     }
 
@@ -113,7 +116,6 @@ abstract contract HolderRewards is Ownable {
             DEBT_DENOMINATOR) - userData.rewardDebt;
 
         if (pendingAmount <= 0) return;
-
 
         emit Claimed(user, pendingAmount);
 
