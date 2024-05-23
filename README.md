@@ -1,6 +1,6 @@
-# Cygnus Network Token
+# WarpCore
 
-This repo contains the smart contract for the Cygnus Network Token Creation.
+This repo contains the smart contract for WarpCore Token Creation.
 
 ## Environment Variables
 
