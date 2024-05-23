@@ -16,6 +16,9 @@ contract Deployer is Script {
     WarpCore warpCore;
 
     function run() public {
+        vm.startBroadcast(
+            uint(0) //Privare key of the deployer
+        );
         warpCore = new WarpCore(
             msg.sender, //ownerAddress,
             payable(address(5555555555)), //teamHolderAddress,
@@ -31,5 +34,7 @@ contract Deployer is Script {
         );
 
         console2.log("distributor deployed at: ", address(warpCore));
+
+        vm.stopBroadcast();
     }
 }
