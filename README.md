@@ -1,41 +1,66 @@
-# WarpCore
+## Foundry
 
-This repo contains the smart contract for WarpCore Token Creation.
+**Foundry is a blazing fast, portable and modular toolkit for Ethereum application development written in Rust.**
 
-## Environment Variables
+Foundry consists of:
 
-look at `.env.example` for the required environment variables, and create a `.env` file with the correct values.
+-   **Forge**: Ethereum testing framework (like Truffle, Hardhat and DappTools).
+-   **Cast**: Swiss army knife for interacting with EVM smart contracts, sending transactions and getting chain data.
+-   **Anvil**: Local Ethereum node, akin to Ganache, Hardhat Network.
+-   **Chisel**: Fast, utilitarian, and verbose solidity REPL.
 
-## How to run
+## Documentation
 
-1. Install dependencies
+https://book.getfoundry.sh/
 
-```bash
-pnpm install
+## Usage
+
+### Build
+
+```shell
+$ forge build
 ```
 
-2. Compile contracts
+### Test
 
-```bash
-pnpm run compile
+```shell
+$ forge test
 ```
 
-3. Run tests
+### Format
 
-```bash
-pnpm run test
+```shell
+$ forge fmt
 ```
 
-4. Run coverage
+### Gas Snapshots
 
-```bash
-pnpm run coverage
+```shell
+$ forge snapshot
 ```
 
-## Test Coverage
+### Anvil
 
+```shell
+$ anvil
+```
 
+### Deploy
 
-## Gas Report
+```shell
+$ forge script script/Counter.s.sol:CounterScript --rpc-url <your_rpc_url> --private-key <your_private_key>
+```
 
+### Cast
 
+```shell
+$ cast <subcommand>
+```
+
+### Help
+
+```shell
+$ forge --help
+$ anvil --help
+$ cast --help
+```
