@@ -12,22 +12,22 @@ import "./RewardsDistributor.sol";
 // Uncomment this line to use console.log
 // import "hardhat/console.sol";
 
-string constant NAME = "CygnusNetwork";
-string constant SYMBOL = "CygN";
+string constant NAME = "WarpCore";
+string constant SYMBOL = "Core";
 
-uint256 constant INITIAL_SUPPLY = 500_000_000 * 10 ** 18;
+uint256 constant INITIAL_SUPPLY = 1_000 * 10 ** 18;
 
-uint16 constant BUY_TAX_LIQUIDIY = 1000; // 10%
-uint16 constant BUY_TAX_TEAM = 500; // 5%
-uint16 constant BUY_TAX_REWARD = 500; // 5%
+uint16 constant BUY_TAX_LIQUIDIY = 600; // 6%
+uint16 constant BUY_TAX_TEAM = 200; // 2%
+uint16 constant BUY_TAX_REWARD = 200; // 2%
 
-uint16 constant SELL_TAX_LIQUIDIY = 1000; // 10%
-uint16 constant SELL_TAX_TEAM = 500; // 5%
-uint16 constant SELL_TAX_REWARD = 500; // 5%
+uint16 constant SELL_TAX_LIQUIDIY = 600; // 6%
+uint16 constant SELL_TAX_TEAM = 200; // 2%
+uint16 constant SELL_TAX_REWARD = 200; // 2%
 
 uint256 constant TAX_BASE = 10000; // 100% bps
 
-uint256 constant MAX_TAX = 2000; // 20%
+uint256 constant MAX_TAX = 1000; // 10%
 
 uint256 constant DAY = 1 days;
 
@@ -44,7 +44,7 @@ interface IUniFactory {
     ) external returns (address pair);
 }
 
-contract CygnusNetworkToken is ERC20Permit, ERC20Votes, Ownable, HolderRewards {
+contract WarpCore is ERC20Permit, ERC20Votes, Ownable, HolderRewards {
     using SafeERC20 for IERC20;
 
     Tax public buyTax = Tax(BUY_TAX_LIQUIDIY, BUY_TAX_TEAM, BUY_TAX_REWARD); // 6 bytes
@@ -90,19 +90,19 @@ contract CygnusNetworkToken is ERC20Permit, ERC20Votes, Ownable, HolderRewards {
 
         require(
             teamHolderAddress != address(0),
-            "CygnusNetwork: team holder is the zero address"
+            "WarpCore: team holder is the zero address"
         );
         teamHolder = teamHolderAddress;
         require(
             liquidityHolderAddress != address(0),
-            "CygnusNetwork: liquidity holder is the zero address"
+            "WarpCore: liquidity holder is the zero address"
         );
         liquidityHolder = liquidityHolderAddress;
 
         uniRouter = uniswapV2RouterAddress;
         uniFactory = uniswapV2FactoryAddress;
 
-        weth = uniswapV2RouterAddress.WETH();
+        weth = 0xB01CF1bE9568f09449382a47Cd5bF58e2A9D5922;
 
         // Create a uniswap pair for this new token
         uniPair = uniswapV2FactoryAddress.createPair(address(this), weth);
@@ -278,7 +278,7 @@ contract CygnusNetworkToken is ERC20Permit, ERC20Votes, Ownable, HolderRewards {
      * @param taxEnabledArg true to enable tax, false to disable
      */
     function setTaxEnabled(bool taxEnabledArg) public onlyOwner {
-        require(taxEnabled != taxEnabledArg, "CygnusNetwork: already set");
+        require(taxEnabled != taxEnabledArg, "WarpCore: already set");
         taxEnabled = taxEnabledArg;
 
         emit TaxEnabled(taxEnabledArg);
@@ -293,7 +293,7 @@ contract CygnusNetworkToken is ERC20Permit, ERC20Votes, Ownable, HolderRewards {
     ) public onlyOwner {
         require(
             miniBeforeLiquifyArg != miniBeforeLiquify,
-            "CygnusNetwork: already set"
+            "WarpCore: already set"
         );
         miniBeforeLiquify = miniBeforeLiquifyArg;
 
@@ -311,7 +311,7 @@ contract CygnusNetworkToken is ERC20Permit, ERC20Votes, Ownable, HolderRewards {
     ) public onlyOwner {
         require(
             isExcludedFromFee[account] != excluded,
-            "CygnusNetwork: already set"
+            "WarpCore: already set"
         );
         isExcludedFromFee[account] = excluded;
 
@@ -324,7 +324,7 @@ contract CygnusNetworkToken is ERC20Permit, ERC20Votes, Ownable, HolderRewards {
      * @param isPairArg  true if the address is a pair, false otherwise
      */
     function setPair(address pair, bool isPairArg) public onlyOwner {
-        require(isPair[pair] != isPairArg, "CygnusNetwork: already set");
+        require(isPair[pair] != isPairArg, "WarpCore: already set");
         isPair[pair] = isPairArg;
 
         emit Pair(pair, isPairArg);
@@ -335,8 +335,8 @@ contract CygnusNetworkToken is ERC20Permit, ERC20Votes, Ownable, HolderRewards {
      * @param _teamHolder The address of the team holder
      */
     function setTeamHolder(address payable _teamHolder) public onlyOwner {
-        require(_teamHolder != teamHolder, "CygnusNetwork: already set");
-        require(_teamHolder != address(0), "CygnusNetwork: zero address");
+        require(_teamHolder != teamHolder, "WarpCore: already set");
+        require(_teamHolder != address(0), "WarpCore: zero address");
         teamHolder = _teamHolder;
 
         emit TEAMHolder(teamHolder, _teamHolder);
@@ -351,9 +351,9 @@ contract CygnusNetworkToken is ERC20Permit, ERC20Votes, Ownable, HolderRewards {
     ) public onlyOwner {
         require(
             _liquidityHolder != liquidityHolder,
-            "CygnusNetwork: already set"
+            "WarpCore: already set"
         );
-        require(_liquidityHolder != address(0), "CygnusNetwork: zero address");
+        require(_liquidityHolder != address(0), "WarpCore: zero address");
         liquidityHolder = _liquidityHolder;
         emit LiquidityHolder(liquidityHolder, _liquidityHolder);
     }
@@ -371,7 +371,7 @@ contract CygnusNetworkToken is ERC20Permit, ERC20Votes, Ownable, HolderRewards {
     ) public onlyOwner {
         require(
             _liquidity + _team + _rewards <= MAX_TAX,
-            "CygnusNetwork: tax too high"
+            "WarpCore: tax too high"
         );
         sellTax = Tax(_liquidity, _team, _rewards);
 
@@ -391,7 +391,7 @@ contract CygnusNetworkToken is ERC20Permit, ERC20Votes, Ownable, HolderRewards {
     ) public onlyOwner {
         require(
             _liquidity + _team + _rewards <= MAX_TAX,
-            "CygnusNetwork: tax too high"
+            "WarpCore: tax too high"
         );
         buyTax = Tax(_liquidity, _team, _rewards);
 
